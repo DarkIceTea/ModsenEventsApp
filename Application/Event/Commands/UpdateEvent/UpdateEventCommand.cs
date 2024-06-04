@@ -1,8 +1,11 @@
 ﻿using MediatR;
-namespace Application.Event.Commands.CreateEvent
+
+namespace Application.Event.Commands.UpdateEvent
 {
-    public class DeleteEventCommand : IRequest<DeleteEventCommand>
+    public class UpdateEventCommand : IRequest <UpdateEventCommand>
     {
+        public Guid UpdatableId { get; set; }
+
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }

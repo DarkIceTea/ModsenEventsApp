@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Domain.Interfaces;
-using Mapster;
 
-namespace Application.Event.Commands.CreateEvent
+
+namespace Application.Event.Commands.DeleteEvent
 {
     public class CreateEventCommandHandler : IRequestHandler<DeleteEventCommand, DeleteEventCommand>
     {
@@ -15,10 +15,7 @@ namespace Application.Event.Commands.CreateEvent
 
         public async Task<DeleteEventCommand> Handle(DeleteEventCommand command, CancellationToken cancellationToken)
         {
-
-            Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
-
-            await _eventRepository.CreateEventAsync(_event, cancellationToken);
+            _eventRepository.DeleteEventAsync(command.Id, cancellationToken);
             return command;
         }
     }

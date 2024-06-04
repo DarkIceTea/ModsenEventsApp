@@ -7,6 +7,7 @@ namespace Domain.Interfaces
         public Task<Guid> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken);
         public Task<Guid> DeleteEventAsync(Guid id, CancellationToken cancellationToken);
         public Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken);
+        public Task<Event> GetEventByIdAsync(Guid id, CancellationToken cancellationToken); 
         public Task<IEnumerable<Event>> GetEventByCriteriaAsync(string name, DateTime? date, string location, string category, CancellationToken cancellationToken);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Application.Event.Commands.CreateEvent;
+using Application.Event.Queries.GetAllEvents;
+using Application.Event.Queries.GetEventById;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Web.Models;
 
 namespace Web.Controllers
 {
@@ -18,15 +18,29 @@ namespace Web.Controllers
         {
             _sender = sender;
         }
-        // GET: EventController
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllEvents(CancellationToken cancellationToken)
+        {
+            return Ok(await _sender.Send(new GetAllEventsQuery(), cancellationToken));
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<ActionResult> GetEventsById([FromRoute] Guid id ,CancellationToken cancellationToken)
+        {
+            return Ok(await _sender.Send(new GetEventByIdQuery() { Id = id }, cancellationToken));
+        }
+
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> CreateEvent([FromBody] DeleteEventCommand command, CancellationToken cancellationToken)
         {
-            //var command = _mapper.Map<CreateEventCommand>(createEventDto);
-            _sender.Send(command);
+            _sender.Send(command, cancellationToken);
             return Ok();
         }
+
+        
 
     }
 }

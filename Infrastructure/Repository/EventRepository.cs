@@ -60,6 +60,11 @@ namespace Infrastructure.Repository
             return await query.ToListAsync(cancellationToken);
         }
 
+        public async Task<Event> GetEventByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Events.FindAsync(id, cancellationToken);
+        }
+
         public async Task<Guid> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken)
         {
             var existingEvent = await _context.Events.FindAsync(id, cancellationToken);
