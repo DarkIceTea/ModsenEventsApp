@@ -1,9 +1,8 @@
 ﻿using MediatR;
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommand : IRequest<Guid>
+    public class CreateEventCommand : IRequest<CreateEventCommand>
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }

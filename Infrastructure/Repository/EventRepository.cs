@@ -1,21 +1,23 @@
 ﻿using Core.Entities;
 using Domain.Interfaces;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
     public class EventRepository : IEventRepository
     {
-        DbContext _context;
+        EventAppDbContext _context;
 
-        EventRepository(DbContext context)
+        public EventRepository(EventAppDbContext context)
         {
             _context = context;
         }
 
         public async Task<Guid> CreateEventAsync(Event _event, CancellationToken cancellationToken)
         {
-            _context.AddAsync(_event, cancellationToken);
+            await _context.Events.AddAsync(_event, cancellationToken);
+            _context.SaveChanges();
             return _event.Id;
         }
 

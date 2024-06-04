@@ -11,12 +11,18 @@ namespace Infrastructure.Data
         
         public DbSet<Event> Events { get; set; }
         public EventAppDbContext(DbContextOptions<EventAppDbContext> options)
-            : base(options) { }
+            : base(options) 
+        {
+            Database.EnsureCreated();
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new EventConfiguration());
+            builder.ApplyConfiguration(new ParticipantConfiguration());
+
             base.OnModelCreating(builder);
+            
         }
     }
 }
