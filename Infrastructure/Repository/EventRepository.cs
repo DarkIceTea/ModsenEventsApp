@@ -21,24 +21,62 @@ namespace Infrastructure.Repository
             return _event.Id;
         }
 
-        public Task<Guid> DeleteEventAsync(Event _event, CancellationToken cancellationToken)
+        public async Task<Guid> DeleteEventAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var eventForRemove = await _context.Events.FindAsync(id, cancellationToken);
+            _context.Events.Remove(eventForRemove);
+            return eventForRemove.Id;
         }
 
-        public Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _context.Events.ToListAsync(cancellationToken);
         }
 
-        public Task<IEnumerable<Event>> GetEventByCriteriaAsync(string name, DateTime? date, string location, string category, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Event>> GetEventByCriteriaAsync(string name, DateTime? date, string location, string category, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+           
+            IQueryable<Event> query = _context.Events;
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(e => e.Name.Contains(name));
+            }
+  
+            if (date.HasValue)
+            {
+                query = query.Where(e => e.Date.Date == date.Value.Date);
+            }
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                query = query.Where(e => e.Location.Contains(location));
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(e => e.Category.Contains(category));
+            }
+            return await query.ToListAsync(cancellationToken);
         }
 
-        public Task<Guid> UpdateEventAsync(Event _event, CancellationToken cancellationToken)
+        public async Task<Guid> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var existingEvent = await _context.Events.FindAsync(id, cancellationToken);
+
+            if (existingEvent == null)
+            {
+                throw new KeyNotFoundException($"Event with ID {id} not found.");
+            }
+
+            existingEvent.Name = _event.Name;
+            existingEvent.Date = _event.Date;
+            existingEvent.Location = _event.Location;
+            existingEvent.Category = _event.Category;
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return existingEvent.Id;
         }
     }
 }
