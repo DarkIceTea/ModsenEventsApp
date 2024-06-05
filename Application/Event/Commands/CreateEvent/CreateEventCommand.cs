@@ -1,7 +1,7 @@
 ﻿using MediatR;
 namespace Application.Event.Commands.CreateEvent
 {
-    public class DeleteEventCommand : IRequest<DeleteEventCommand>
+    public class CreateEventCommand : IRequest<CreateEventCommand>
     {
         public string Name { get; set; }
         public string Description { get; set; }

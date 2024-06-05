@@ -4,7 +4,7 @@ using Mapster;
 
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommandHandler : IRequestHandler<DeleteEventCommand, DeleteEventCommand>
+    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, CreateEventCommand>
     {
         private readonly IEventRepository _eventRepository;
 
@@ -13,7 +13,7 @@ namespace Application.Event.Commands.CreateEvent
             _eventRepository = eventRepository;
         }
 
-        public async Task<DeleteEventCommand> Handle(DeleteEventCommand command, CancellationToken cancellationToken)
+        public async Task<CreateEventCommand> Handle(CreateEventCommand command, CancellationToken cancellationToken)
         {
 
             Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();

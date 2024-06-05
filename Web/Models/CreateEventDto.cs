@@ -15,7 +15,7 @@ namespace Web.Models
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateEventDto, DeleteEventCommand>()
+            profile.CreateMap<CreateEventDto, CreateEventCommand>()
                 .ForMember(eventCommand => eventCommand.Name,
                     opt => opt.MapFrom(EventDto => EventDto.Name))
                 .ForMember(eventCommand => eventCommand.Description,

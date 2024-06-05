@@ -2,7 +2,7 @@
 
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommandValidator : AbstractValidator<DeleteEventCommand>
+    public class CreateEventCommandValidator : AbstractValidator<CreateEventCommand>
     {
         public CreateEventCommandValidator() { }
     }

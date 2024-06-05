@@ -25,6 +25,7 @@ namespace Infrastructure.Repository
         {
             var eventForRemove = await _context.Events.FindAsync(id, cancellationToken);
             _context.Events.Remove(eventForRemove);
+            _context.SaveChanges();
             return eventForRemove.Id;
         }
 

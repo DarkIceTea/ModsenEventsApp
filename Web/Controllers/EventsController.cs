@@ -1,5 +1,8 @@
 ﻿using Application.Event.Commands.CreateEvent;
+using Application.Event.Commands.UpdateEvent;
+using Application.Event.Commands.DeleteEvent;
 using Application.Event.Queries.GetAllEvents;
+using Application.Event.Queries.GetEventByCriteria;
 using Application.Event.Queries.GetEventById;
 using AutoMapper;
 using MediatR;
@@ -32,15 +35,38 @@ namespace Web.Controllers
             return Ok(await _sender.Send(new GetEventByIdQuery() { Id = id }, cancellationToken));
         }
 
+        [HttpGet]
+        [Route("search")]
+        public async Task<ActionResult> GetEventByCriteria(CancellationToken cancellationToken, string name = null, DateTime? dateTime = null, string location = null, string category = null)
+        {
+            return Ok(await _sender.Send(new GetEventByCriteriaQuery()
+            {
+                Name = name,
+                Date = dateTime,
+                Location = location,
+                Category = category
+            }));
+        }
+
         [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> CreateEvent([FromBody] DeleteEventCommand command, CancellationToken cancellationToken)
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
         {
             _sender.Send(command, cancellationToken);
             return Ok();
         }
 
-        
+        [HttpPut("update/{id:guid}")]
+        public async Task<ActionResult> UpdateEvent([FromRoute] Guid id, [FromBody] UpdateEventCommand updateEventCommand, CancellationToken cancellationToken)
+        {
+            updateEventCommand.UpdatableId = id;
+            return Ok(await _sender.Send(updateEventCommand, cancellationToken));
+        }
 
+        [HttpDelete("delete/{id:guid}")]
+        public async Task<ActionResult> DeleteEvent([FromRoute]Guid id)
+        {
+            return Ok(_sender.Send(new DeleteEventCommand() { Id = id }));
+        }
     }
 }
