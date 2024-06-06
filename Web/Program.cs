@@ -4,9 +4,13 @@ using Application.Interfaces;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web
@@ -18,24 +22,39 @@ namespace Web
             var builder = WebApplication.CreateBuilder(args);
 
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-            //connection = "Server=(localdb)\\v11.0;Database=EventApp;Trusted_Connection=True;MultipleActiveResultSets=true";
-            // Add services to the container.
 
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlite("Data Source=EventApp.db"));
-            //SQLitePCL.raw.SetProvider(new SQLitePCL.);
 
 
             builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
-                                                /*.RegisterServicesFromAssemblyContaining<CreateEventCommandHandler>()*/);
-            //builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlServer(connection));
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
+            builder.Services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secret_key")),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireClaim("role", "admin"));
+            });
 
             var app = builder.Build();
 
@@ -46,8 +65,9 @@ namespace Web
                 app.UseSwaggerUI();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
