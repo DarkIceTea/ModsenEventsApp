@@ -7,11 +7,14 @@ using Application.Event.Queries.GetEventById;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers
 {
     [ApiController]
     [Route("api/events")]
+    //[Authorize(Policy = "AuthUsers")]
+    [Authorize(Policy = "AuthUsers")]
     public class EventsController : Controller
     {
         ISender _sender;
@@ -49,7 +52,7 @@ namespace Web.Controllers
         }
 
         [HttpPost("create")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
         {
             _sender.Send(command, cancellationToken);

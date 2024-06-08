@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repository;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -31,7 +32,8 @@ namespace Web
 
             builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlite("Data Source=EventApp.db"));
 
-
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
@@ -45,7 +47,7 @@ namespace Web
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secret_key")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("keykeykeykeykeykeykeykeykeykeykeykeykeykey")),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
@@ -53,7 +55,8 @@ namespace Web
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminOnly", policy =>
-                    policy.RequireClaim("role", "admin"));
+                    policy.RequireRole("admin"));
+                options.AddPolicy("AuthUsers", policy => policy.RequireAuthenticatedUser());
             });
 
             var app = builder.Build();
