@@ -7,6 +7,7 @@ using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using Web.Middleware;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web
@@ -40,12 +41,13 @@ namespace Web
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCustomExceptionHandler();
             //app.UseHttpsRedirection();
 
             app.UseAuthorization();
