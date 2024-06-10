@@ -32,6 +32,7 @@ namespace Web
 
             builder.Services.AddDbContext<EventAppDbContext>(options => options.UseSqlite("Data Source=EventApp.db"));
 
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
@@ -49,7 +50,8 @@ namespace Web
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("keykeykeykeykeykeykeykeykeykeykeykeykeykey")),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = true
                 };
             });
             builder.Services.AddAuthorization(options =>

@@ -55,8 +55,7 @@ namespace Web.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
         {
-            _sender.Send(command, cancellationToken);
-            return Ok();
+            return Ok(await _sender.Send(command, cancellationToken));
         }
 
         [HttpPut("update/{id:guid}")]
@@ -67,9 +66,9 @@ namespace Web.Controllers
         }
 
         [HttpDelete("delete/{id:guid}")]
-        public async Task<ActionResult> DeleteEvent([FromRoute]Guid id)
+        public async Task<ActionResult> DeleteEvent([FromRoute]Guid id, CancellationToken cancellationToken)
         {
-            return Ok(_sender.Send(new DeleteEventCommand() { Id = id }));
+            return Ok(await _sender.Send(new DeleteEventCommand() { Id = id }, cancellationToken));
         }
     }
 }

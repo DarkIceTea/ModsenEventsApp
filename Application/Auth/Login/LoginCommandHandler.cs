@@ -18,10 +18,12 @@ namespace Application.Auth.Login
         {
             var participant = await _participantRepository.GetParticipantByEmailAsync(command.Email, cancellationToken);
 
-            if (participant?.FirstName == command.Name)
-                return _authService.GenerateTokens(participant);
+            if (participant?.FirstName != command.Name)
+                throw new NotFoundException();
 
-            throw new NotFoundException();
+            var tokens = _authService.GenerateTokens(participant);
+            _participantRepository.SetRefreshTokenAsync(participant.Id, tokens.RefreshToken, cancellationToken);
+            return tokens;
         }
     }
 }

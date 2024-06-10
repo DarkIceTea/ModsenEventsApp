@@ -11,6 +11,14 @@ namespace Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
+        IHttpContextAccessor _httpContextAccessor;
+        HttpContext _httpContext;
+
+        public AuthService(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _httpContext = httpContextAccessor.HttpContext;
+        }
         public Tokens GenerateTokens(Participant participant)
         {
             return new Tokens() { AccessToken = GenerateAccessToken(participant),
@@ -34,7 +42,7 @@ namespace Infrastructure.Services
             issuer: "EventWebApi",
             audience: "EventWebApi",
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(30),
+            expires: DateTime.UtcNow.AddMinutes(10),
             signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -51,5 +59,13 @@ namespace Infrastructure.Services
             }
         }
 
+        public Guid GetParticipantId()
+        {
+            string? ParticipantId = _httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (ParticipantId is null)
+                throw new InvalidOperationException("User Id not found");
+            return Guid.Parse(ParticipantId);
+        }
     }
 }

@@ -29,5 +29,12 @@ namespace Infrastructure.Repository
         {
             return await _dbContext.Participants.FindAsync(id, cancellationToken);
         }
+
+        public async Task SetRefreshTokenAsync(Guid id, string refreshToken, CancellationToken cancellationToken)
+        {
+            var participant = await _dbContext.Participants.FindAsync(id, cancellationToken);
+            participant.RefreshToken = refreshToken;
+            _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
