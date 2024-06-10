@@ -10,6 +10,7 @@ namespace Infrastructure.Data
     {
         
         public DbSet<Event> Events { get; set; }
+        public DbSet<Participant> Participants { get; set; }
         public EventAppDbContext(DbContextOptions<EventAppDbContext> options)
             : base(options) 
         {

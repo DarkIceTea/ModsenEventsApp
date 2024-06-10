@@ -10,6 +10,7 @@ namespace Infrastructure.EntityTypeConfigurations
         {
             builder.HasKey(participant => participant.Id);
             builder.HasIndex(participant => participant.Id).IsUnique();
+            
         }
     }
 }

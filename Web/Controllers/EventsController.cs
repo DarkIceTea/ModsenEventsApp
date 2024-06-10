@@ -7,11 +7,14 @@ using Application.Event.Queries.GetEventById;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Controllers
 {
     [ApiController]
     [Route("api/events")]
+    //[Authorize(Policy = "AuthUsers")]
+    [Authorize(Policy = "AuthUsers")]
     public class EventsController : Controller
     {
         ISender _sender;
@@ -49,11 +52,10 @@ namespace Web.Controllers
         }
 
         [HttpPost("create")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
         {
-            _sender.Send(command, cancellationToken);
-            return Ok();
+            return Ok(await _sender.Send(command, cancellationToken));
         }
 
         [HttpPut("update/{id:guid}")]
@@ -64,9 +66,9 @@ namespace Web.Controllers
         }
 
         [HttpDelete("delete/{id:guid}")]
-        public async Task<ActionResult> DeleteEvent([FromRoute]Guid id)
+        public async Task<ActionResult> DeleteEvent([FromRoute]Guid id, CancellationToken cancellationToken)
         {
-            return Ok(_sender.Send(new DeleteEventCommand() { Id = id }));
+            return Ok(await _sender.Send(new DeleteEventCommand() { Id = id }, cancellationToken));
         }
     }
 }

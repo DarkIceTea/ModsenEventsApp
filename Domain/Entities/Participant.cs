@@ -8,5 +8,8 @@
         public DateTime DateOfBirth { get; set; }
         public DateTime RegistrationDate { get; set; }
         public string Email { get; set; }
+        public string Role { get; set; }
+        public List<Event> Events { get; set; }
+        public string? RefreshToken { get; set; }
     }
 }
