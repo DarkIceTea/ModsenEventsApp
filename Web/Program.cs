@@ -11,7 +11,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+
 using System.Text;
+
+using Web.Middleware;
+
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web
@@ -64,6 +68,7 @@ namespace Web
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -71,6 +76,8 @@ namespace Web
             }
 
             app.UseHttpsRedirection();
+          
+            app.UseCustomExceptionHandler();
 
             app.UseAuthentication();
             app.UseAuthorization();
