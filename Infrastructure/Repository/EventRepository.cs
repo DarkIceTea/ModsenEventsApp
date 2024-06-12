@@ -31,13 +31,13 @@ namespace Infrastructure.Repository
 
         public async Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken)
         {
-            return await _context.Events.ToListAsync(cancellationToken);
+            return await _context.Events.Include(e => e.Participants).ToListAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Event>> GetEventByCriteriaAsync(string name, DateTime? date, string location, string category, CancellationToken cancellationToken)
         {
            
-            IQueryable<Event> query = _context.Events;
+            IQueryable<Event> query = _context.Events.Include(e => e.Participants);
 
             if (!string.IsNullOrEmpty(name))
             {
@@ -63,7 +63,9 @@ namespace Infrastructure.Repository
 
         public async Task<Event> GetEventByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Events.FindAsync(id, cancellationToken);
+            var _event = await _context.Events.FindAsync(id, cancellationToken);
+            _context.Entry(_event).Collection(e => e.Participants).Load();
+            return _event;
         }
 
         public async Task<Guid> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken)

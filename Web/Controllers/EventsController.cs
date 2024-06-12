@@ -4,21 +4,19 @@ using Application.Event.Commands.DeleteEvent;
 using Application.Event.Queries.GetAllEvents;
 using Application.Event.Queries.GetEventByCriteria;
 using Application.Event.Queries.GetEventById;
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+
 
 namespace Web.Controllers
 {
     [ApiController]
     [Route("api/events")]
-    //[Authorize(Policy = "AuthUsers")]
     [Authorize(Policy = "AuthUsers")]
     public class EventsController : Controller
     {
-        ISender _sender;
-        IMapper _mapper;
+        private readonly ISender _sender;
 
         public EventsController(ISender sender)
         {

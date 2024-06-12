@@ -3,7 +3,7 @@ using Domain.Interfaces;
 using Mapster;
 using MediatR;
 
-namespace Application.Participant.Commands.RegisterParticipant
+namespace Application.Auth.RegisterParticipant
 {
     public class RegisterParticipantCommandHandler : IRequestHandler<RegisterParticipantCommand, Guid>
     {
