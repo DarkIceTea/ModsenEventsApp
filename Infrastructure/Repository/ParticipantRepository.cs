@@ -16,7 +16,6 @@ namespace Infrastructure.Repository
         public async Task<Guid> AddParicipantAsync(Participant paricipant, CancellationToken cancellationToken)
         {
             await _dbContext.Participants.AddAsync(paricipant, cancellationToken);
-            _dbContext.SaveChanges();
             return paricipant.Id;
         }
 
@@ -34,7 +33,6 @@ namespace Infrastructure.Repository
         {
             var participant = await _dbContext.Participants.FindAsync(id, cancellationToken);
             participant.RefreshToken = refreshToken;
-            _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

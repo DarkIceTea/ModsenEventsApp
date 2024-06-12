@@ -40,6 +40,7 @@ namespace Web
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
             builder.Services.AddAuthentication(option =>

@@ -1,16 +1,17 @@
 ﻿using MediatR;
 using Domain.Interfaces;
 using Mapster;
+using Application.Interfaces;
 
 namespace Application.Event.Commands.CreateEvent
 {
     public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, CreateEventCommand>
     {
-        private readonly IEventRepository _eventRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateEventCommandHandler(IEventRepository eventRepository)
+        public CreateEventCommandHandler(IUnitOfWork unitOfWork)
         {
-            _eventRepository = eventRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<CreateEventCommand> Handle(CreateEventCommand command, CancellationToken cancellationToken)
@@ -18,7 +19,8 @@ namespace Application.Event.Commands.CreateEvent
 
             Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
 
-            await _eventRepository.CreateEventAsync(_event, cancellationToken);
+            await _unitOfWork.EventRepository.CreateEventAsync(_event, cancellationToken);
+            _unitOfWork.Save();
             return command;
         }
     }

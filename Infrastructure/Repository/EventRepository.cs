@@ -17,7 +17,6 @@ namespace Infrastructure.Repository
         public async Task<Guid> CreateEventAsync(Event _event, CancellationToken cancellationToken)
         {
             await _context.Events.AddAsync(_event, cancellationToken);
-            _context.SaveChanges();
             return _event.Id;
         }
 
@@ -25,7 +24,6 @@ namespace Infrastructure.Repository
         {
             var eventForRemove = await _context.Events.FindAsync(id, cancellationToken);
             _context.Events.Remove(eventForRemove);
-            _context.SaveChanges();
             return eventForRemove.Id;
         }
 
@@ -81,8 +79,6 @@ namespace Infrastructure.Repository
             existingEvent.Date = _event.Date;
             existingEvent.Location = _event.Location;
             existingEvent.Category = _event.Category;
-
-            await _context.SaveChangesAsync(cancellationToken);
 
             return existingEvent.Id;
         }

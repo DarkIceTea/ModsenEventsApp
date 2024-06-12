@@ -1,21 +1,22 @@
 ﻿using MediatR;
-using Domain.Interfaces;
+using Application.Interfaces;
 
 
 namespace Application.Event.Commands.DeleteEvent
 {
     public class CreateEventCommandHandler : IRequestHandler<DeleteEventCommand, DeleteEventCommand>
     {
-        private readonly IEventRepository _eventRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateEventCommandHandler(IEventRepository eventRepository)
+        public CreateEventCommandHandler(IUnitOfWork unitOfWork)
         {
-            _eventRepository = eventRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<DeleteEventCommand> Handle(DeleteEventCommand command, CancellationToken cancellationToken)
         {
-            _eventRepository.DeleteEventAsync(command.Id, cancellationToken);
+            _unitOfWork.EventRepository.DeleteEventAsync(command.Id, cancellationToken);
+            _unitOfWork.Save();
             return command;
         }
     }

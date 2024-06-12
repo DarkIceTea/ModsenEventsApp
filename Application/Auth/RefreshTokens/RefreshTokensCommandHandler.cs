@@ -1,29 +1,29 @@
 ﻿using Application.Interfaces;
 using Domain.Interfaces;
 using MediatR;
-using System.Security.Claims;
 
 namespace Application.Auth.RefreshTokens
 {
-    public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokensCommand, Tokens>
+    public class RefreshTokensCommandHandler : IRequestHandler<RefreshTokensCommand, Tokens>
     {
-        private readonly IParticipantRepository _participantRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthService _authService;
-        public RefreshTokenCommandHandler(IAuthService authService, IParticipantRepository participantRepository)
+        public RefreshTokensCommandHandler(IAuthService authService, IUnitOfWork unitOfWork)
         {
             _authService = authService;
-            _participantRepository = participantRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Tokens> Handle(RefreshTokensCommand request, CancellationToken cancellationToken)
         {
             Guid id = _authService.GetParticipantId();
-            var participant = await _participantRepository.GetParticipantByIdAsync(id, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(id, cancellationToken);
             if (!participant.RefreshToken.Equals(request.RefreshToken))
                 throw new UnauthorizedAccessException("Refresh tokens don't match");
 
             var tokens = _authService.GenerateTokens(participant);
-            _participantRepository.SetRefreshTokenAsync(id, tokens.RefreshToken, cancellationToken);
+            _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(id, tokens.RefreshToken, cancellationToken);
+            _unitOfWork.Save();
             return tokens;
         }
     }

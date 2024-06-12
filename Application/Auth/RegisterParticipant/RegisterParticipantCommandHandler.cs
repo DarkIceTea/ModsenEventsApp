@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Application.Interfaces;
+using Core.Entities;
 using Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -7,11 +8,11 @@ namespace Application.Auth.RegisterParticipant
 {
     public class RegisterParticipantCommandHandler : IRequestHandler<RegisterParticipantCommand, Guid>
     {
-        private readonly IParticipantRepository _participantRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RegisterParticipantCommandHandler(IParticipantRepository participantRepository)
+        public RegisterParticipantCommandHandler(IUnitOfWork unitOfWork)
         {
-            _participantRepository = participantRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(RegisterParticipantCommand command, CancellationToken cancellationToken)
@@ -21,7 +22,10 @@ namespace Application.Auth.RegisterParticipant
             paricipant.Id = Guid.NewGuid();
             paricipant.Role = "user";
 
-            return await _participantRepository.AddParicipantAsync(paricipant, cancellationToken);
+            var res = await _unitOfWork.ParticipantRepository.AddParicipantAsync(paricipant, cancellationToken);
+            _unitOfWork.Save();
+
+            return res;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Event.Queries.GetEventById;
+using Application.Interfaces;
 using Domain.Interfaces;
 using MediatR;
 
@@ -6,15 +7,15 @@ namespace Application.Event.Queries.GetEventbyId
 {
     public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, Core.Entities.Event>
     {
-        IEventRepository _eventRepository;
-        public GetEventByIdQueryHandler(IEventRepository eventRepository)
+        IUnitOfWork _unitOfWork;
+        public GetEventByIdQueryHandler(IUnitOfWork unitOfWork)
         {
-            _eventRepository = eventRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Core.Entities.Event> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _eventRepository.GetEventByIdAsync(request.Id, cancellationToken);
+            return await _unitOfWork.EventRepository.GetEventByIdAsync(request.Id, cancellationToken);
         }
     }
 }

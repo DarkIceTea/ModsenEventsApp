@@ -7,22 +7,23 @@ namespace Application.Auth.Login
     public class LoginCommandHandler : IRequestHandler<LoginCommand, Tokens>
     {
         private readonly IAuthService _authService;
-        private readonly IParticipantRepository _participantRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LoginCommandHandler(IParticipantRepository participantRepository, IAuthService authService)
+        public LoginCommandHandler(IUnitOfWork unitOfWork, IAuthService authService)
         {
-            _participantRepository = participantRepository;
+            _unitOfWork = unitOfWork;
             _authService = authService;
         }
         public async Task<Tokens> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var participant = await _participantRepository.GetParticipantByEmailAsync(command.Email, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByEmailAsync(command.Email, cancellationToken);
 
             if (participant?.FirstName != command.Name)
                 throw new NotFoundException();
 
             var tokens = _authService.GenerateTokens(participant);
-            _participantRepository.SetRefreshTokenAsync(participant.Id, tokens.RefreshToken, cancellationToken);
+            _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(participant.Id, tokens.RefreshToken, cancellationToken);
+            _unitOfWork.Save();
             return tokens;
         }
     }

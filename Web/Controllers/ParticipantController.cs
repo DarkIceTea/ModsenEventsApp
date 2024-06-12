@@ -28,7 +28,7 @@ namespace Web.Controllers
         [HttpPost("cancel-register-for-event/{id:guid}")]
         public async Task<ActionResult> CancelRegisterForEvent(Guid id, CancellationToken cancellationToken)
         {
-            _sender.Send(new CancelRegisterForEventCommand() { EventId = id }, cancellationToken);
+            await _sender.Send(new CancelRegisterForEventCommand() { EventId = id }, cancellationToken);
             return Ok();
         }
     }
