@@ -1,7 +1,7 @@
 ﻿
 using Application.Auth.Login;
 using Application.Auth.RefreshTokens;
-using Application.Participant.Commands.RegisterParticipant;
+using Application.Auth.RegisterParticipant;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;

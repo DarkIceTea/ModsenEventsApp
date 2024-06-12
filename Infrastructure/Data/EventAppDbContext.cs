@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.EntityTypeConfigurations;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Data
 {
@@ -14,7 +13,11 @@ namespace Infrastructure.Data
         public EventAppDbContext(DbContextOptions<EventAppDbContext> options)
             : base(options) 
         {
-            Database.EnsureCreated();
+            if (!Database.CanConnect())
+            {
+                Database.EnsureCreated();
+                new EventAppDbSeed(this);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

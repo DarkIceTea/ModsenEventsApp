@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Application.Exceptions;
+using System.Net;
 using System.Text.Json;
 
 namespace Web.Middleware
@@ -28,13 +29,12 @@ namespace Web.Middleware
             var result = string.Empty;
             switch (exception)
             {
-                //case ValidationException validationException:
-                //    code = HttpStatusCode.BadRequest;
-                //    result = JsonSerializer.Serialize(validationException.Errors);
-                //    break;
-                //case NotFoundException:
-                //    code = HttpStatusCode.NotFound;
-                //    break;
+                case AlreadyExistException ex:
+                    code = HttpStatusCode.BadRequest;
+                    break;
+                case NotFoundException:
+                    code = HttpStatusCode.NotFound;
+                    break;
             }
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
