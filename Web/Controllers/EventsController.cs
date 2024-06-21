@@ -1,97 +1,72 @@
 ﻿using Application.Event.Commands.CreateEvent;
-using AutoMapper;
+using Application.Event.Commands.UpdateEvent;
+using Application.Event.Commands.DeleteEvent;
+using Application.Event.Queries.GetAllEvents;
+using Application.Event.Queries.GetEventByCriteria;
+using Application.Event.Queries.GetEventById;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Web.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Web.Controllers
 {
+    [ApiController]
+    [Route("api/events")]
+    [Authorize(Policy = "AuthUsers")]
     public class EventsController : Controller
     {
-        ISender _sender;
-        IMapper _mapper;
+        private readonly ISender _sender;
 
         public EventsController(ISender sender)
         {
             _sender = sender;
         }
-        // GET: EventController
-        [HttpPost]
-        public ActionResult CreateEvent([FromBody] CreateEventDto createEventDto, CancellationToken cancellationToken)
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllEvents(CancellationToken cancellationToken)
         {
-            var command = _mapper.Map<CreateEventCommand>(createEventDto);
-            _sender.Send(command);
-            return Ok();
+            return Ok(await _sender.Send(new GetAllEventsQuery(), cancellationToken));
         }
 
-        // GET: EventController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<ActionResult> GetEventsById([FromRoute] Guid id ,CancellationToken cancellationToken)
         {
-            return View();
+            return Ok(await _sender.Send(new GetEventByIdQuery() { Id = id }, cancellationToken));
         }
 
-        // GET: EventController/Create
-        public ActionResult Create()
+        [HttpGet]
+        [Route("search")]
+        public async Task<ActionResult> GetEventByCriteria(CancellationToken cancellationToken, string name = null, DateTime? dateTime = null, string location = null, string category = null)
         {
-            return View();
-        }
-
-        // POST: EventController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            return Ok(await _sender.Send(new GetEventByCriteriaQuery()
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+                Name = name,
+                Date = dateTime,
+                Location = location,
+                Category = category
+            }));
         }
 
-        // GET: EventController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPost("create")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<ActionResult> CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
         {
-            return View();
+            return Ok(await _sender.Send(command, cancellationToken));
         }
 
-        // POST: EventController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpPut("update/{id:guid}")]
+        public async Task<ActionResult> UpdateEvent([FromRoute] Guid id, [FromBody] UpdateEventCommand updateEventCommand, CancellationToken cancellationToken)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            updateEventCommand.UpdatableId = id;
+            return Ok(await _sender.Send(updateEventCommand, cancellationToken));
         }
 
-        // GET: EventController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpDelete("delete/{id:guid}")]
+        public async Task<ActionResult> DeleteEvent([FromRoute]Guid id, CancellationToken cancellationToken)
         {
-            return View();
-        }
-
-        // POST: EventController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return Ok(await _sender.Send(new DeleteEventCommand() { Id = id }, cancellationToken));
         }
     }
 }

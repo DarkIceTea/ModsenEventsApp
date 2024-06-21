@@ -1,35 +1,28 @@
 ﻿using MediatR;
-using Application.Interfaces;
-using Core.Entities;
 using Domain.Interfaces;
+using Mapster;
+using Application.Interfaces;
+using Application.Dto;
 
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Guid>
+    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, EventDto>
     {
-        private readonly IEventRepository _eventRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        CreateEventCommandHandler(IEventRepository eventRepository)
+        public CreateEventCommandHandler(IUnitOfWork unitOfWork)
         {
-            _eventRepository = eventRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> Handle(CreateEventCommand command, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(CreateEventCommand command, CancellationToken cancellationToken)
         {
-            var _event = new Core.Entities.Event
-            {
-                Id = command.Id,
-                Name = command.Name,
-                Description = command.Description,
-                Location = command.Location,
-                Category = command.Category,
-                MaxParticipants = command.MaxParticipants,
-                ImagePath = command.ImagePath
-            };
 
-            await _eventRepository.CreateEventAsync(_event, cancellationToken);
+            Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
 
-            return _event.Id;
+            var res = await _unitOfWork.EventRepository.CreateEventAsync(_event, cancellationToken);
+            _unitOfWork.Save();
+            return res.Adapt<EventDto>();
         }
     }
 }

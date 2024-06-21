@@ -10,6 +10,6 @@
         public string Category { get; set; }
         public int MaxParticipants { get; set; }
         public List<Participant> Participants { get; set; }
-        public string ImagePath { get; set; }
+        public byte[]? Image { get; set; }
     }
 }

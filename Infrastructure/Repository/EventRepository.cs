@@ -1,42 +1,86 @@
 ﻿using Core.Entities;
 using Domain.Interfaces;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
     public class EventRepository : IEventRepository
     {
-        DbContext _context;
+        EventAppDbContext _context;
 
-        EventRepository(DbContext context)
+        public EventRepository(EventAppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Guid> CreateEventAsync(Event _event, CancellationToken cancellationToken)
+        public async Task<Event> CreateEventAsync(Event _event, CancellationToken cancellationToken)
         {
-            _context.AddAsync(_event, cancellationToken);
-            return _event.Id;
+            await _context.Events.AddAsync(_event, cancellationToken);
+            return _event;
         }
 
-        public Task<Guid> DeleteEventAsync(Event _event, CancellationToken cancellationToken)
+        public async Task<Event> DeleteEventAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var eventForRemove = await _context.Events.FindAsync(id, cancellationToken);
+            _context.Events.Remove(eventForRemove);
+            return eventForRemove;
         }
 
-        public Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _context.Events.Include(e => e.Participants).ToListAsync(cancellationToken);
         }
 
-        public Task<IEnumerable<Event>> GetEventByCriteriaAsync(string name, DateTime? date, string location, string category, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Event>> GetEventByCriteriaAsync(string name, DateTime? date, string location, string category, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+           
+            IQueryable<Event> query = _context.Events.Include(e => e.Participants);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(e => e.Name.Contains(name));
+            }
+  
+            if (date.HasValue)
+            {
+                query = query.Where(e => e.Date.Date == date.Value.Date);
+            }
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                query = query.Where(e => e.Location.Contains(location));
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(e => e.Category.Contains(category));
+            }
+            return await query.ToListAsync(cancellationToken);
         }
 
-        public Task<Guid> UpdateEventAsync(Event _event, CancellationToken cancellationToken)
+        public async Task<Event> GetEventByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var _event = await _context.Events.FindAsync(id, cancellationToken);
+            _context.Entry(_event).Collection(e => e.Participants).Load();
+            return _event;
+        }
+
+        public async Task<Event> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken)
+        {
+            var existingEvent = await _context.Events.FindAsync(id, cancellationToken);
+
+            if (existingEvent == null)
+            {
+                throw new KeyNotFoundException($"Event with ID {id} not found.");
+            }
+
+            existingEvent.Name = _event.Name;
+            existingEvent.Date = _event.Date;
+            existingEvent.Location = _event.Location;
+            existingEvent.Category = _event.Category;
+
+            return existingEvent;
         }
     }
 }
