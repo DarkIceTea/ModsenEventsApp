@@ -1,11 +1,13 @@
-﻿using Application.Event.Queries.GetEventById;
+﻿using Application.Dto;
+using Application.Event.Queries.GetEventById;
 using Application.Interfaces;
 using Domain.Interfaces;
+using Mapster;
 using MediatR;
 
 namespace Application.Event.Queries.GetEventbyId
 {
-    public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, Core.Entities.Event>
+    public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, EventDto>
     {
         IUnitOfWork _unitOfWork;
         public GetEventByIdQueryHandler(IUnitOfWork unitOfWork)
@@ -13,9 +15,10 @@ namespace Application.Event.Queries.GetEventbyId
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Core.Entities.Event> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.EventRepository.GetEventByIdAsync(request.Id, cancellationToken);
+            var res = await _unitOfWork.EventRepository.GetEventByIdAsync(request.Id, cancellationToken);
+            return res.Adapt<EventDto>();
         }
     }
 }

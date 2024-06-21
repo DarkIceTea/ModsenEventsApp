@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Application.Interfaces;
+using Application.Dto;
+using Mapster;
 
 
 namespace Application.Event.Commands.DeleteEvent
 {
-    public class CreateEventCommandHandler : IRequestHandler<DeleteEventCommand, DeleteEventCommand>
+    public class CreateEventCommandHandler : IRequestHandler<DeleteEventCommand, EventDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -13,11 +15,11 @@ namespace Application.Event.Commands.DeleteEvent
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DeleteEventCommand> Handle(DeleteEventCommand command, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(DeleteEventCommand command, CancellationToken cancellationToken)
         {
-            _unitOfWork.EventRepository.DeleteEventAsync(command.Id, cancellationToken);
+            var res = await _unitOfWork.EventRepository.DeleteEventAsync(command.Id, cancellationToken);
             _unitOfWork.Save();
-            return command;
+            return res.Adapt<EventDto>();
         }
     }
 }

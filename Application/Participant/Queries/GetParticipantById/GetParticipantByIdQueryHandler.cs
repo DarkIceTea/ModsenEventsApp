@@ -1,10 +1,12 @@
-﻿using Application.Interfaces;
+﻿using Application.Dto;
+using Application.Interfaces;
 using Domain.Interfaces;
+using Mapster;
 using MediatR;
 
 namespace Application.Participant.Queries.GetParticipantById
 {
-    public class GetParticipantByIdQueryHandler : IRequestHandler<GetParticipantByIdQuery, Core.Entities.Participant>
+    public class GetParticipantByIdQueryHandler : IRequestHandler<GetParticipantByIdQuery, ParticipantDto>
     {
         private readonly IUnitOfWork _unitOfWork;
         public GetParticipantByIdQueryHandler(IUnitOfWork unitOfWork)
@@ -12,9 +14,10 @@ namespace Application.Participant.Queries.GetParticipantById
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Core.Entities.Participant> Handle(GetParticipantByIdQuery query,CancellationToken cancellationToken)
+        public async Task<ParticipantDto> Handle(GetParticipantByIdQuery query,CancellationToken cancellationToken)
         {
-            return await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(query.Id, cancellationToken);
+            var res = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(query.Id, cancellationToken);
+            return res.Adapt<ParticipantDto>();
         }
     }
 

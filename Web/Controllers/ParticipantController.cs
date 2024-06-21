@@ -1,5 +1,6 @@
 ﻿using Application.Participant.Commands.CancelRegisterForEvent;
 using Application.Participant.Commands.RegisterForEvent;
+using Application.Participant.Queries.GetParticipantById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,13 @@ namespace Web.Controllers
         public ParticipantController(ISender sender)
         {
             _sender = sender;
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetParticipantById([FromRoute] Guid id)
+        {
+            var participant = await _sender.Send(new GetParticipantByIdQuery { Id = id });
+            return Ok(participant);
         }
 
         [HttpPost("register-for-event/{id:guid}")]

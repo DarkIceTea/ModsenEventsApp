@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using Application.Dto;
+using MediatR;
 
 namespace Application.Event.Queries.GetAllEvents
 {
-    public class GetAllEventsQuery : IRequest<IEnumerable<Core.Entities.Event>>
+    public class GetAllEventsQuery : IRequest<IEnumerable<EventDto>>
     {
     }
 }

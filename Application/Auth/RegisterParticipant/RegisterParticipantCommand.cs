@@ -2,7 +2,7 @@
 
 namespace Application.Auth.RegisterParticipant
 {
-    public class RegisterParticipantCommand : IRequest<Guid>
+    public class RegisterParticipantCommand : IRequest<Tokens>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

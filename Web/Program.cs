@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 
 using System.Text;
-
+using Web.Extensions;
 using Web.Middleware;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -41,6 +41,7 @@ namespace Web
             builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.RegisterMapsterConfiguration();
             builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
             builder.Services.AddAuthentication(option =>
@@ -78,7 +79,7 @@ namespace Web
 
             app.UseHttpsRedirection();
           
-            app.UseCustomExceptionHandler();
+            //app.UseCustomExceptionHandler();
 
             app.UseAuthentication();
             app.UseAuthorization();

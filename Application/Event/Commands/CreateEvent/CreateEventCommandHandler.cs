@@ -2,10 +2,11 @@
 using Domain.Interfaces;
 using Mapster;
 using Application.Interfaces;
+using Application.Dto;
 
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, CreateEventCommand>
+    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, EventDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -14,14 +15,14 @@ namespace Application.Event.Commands.CreateEvent
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<CreateEventCommand> Handle(CreateEventCommand command, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(CreateEventCommand command, CancellationToken cancellationToken)
         {
 
             Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
 
-            await _unitOfWork.EventRepository.CreateEventAsync(_event, cancellationToken);
+            var res = await _unitOfWork.EventRepository.CreateEventAsync(_event, cancellationToken);
             _unitOfWork.Save();
-            return command;
+            return res.Adapt<EventDto>();
         }
     }
 }

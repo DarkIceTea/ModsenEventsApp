@@ -1,7 +1,8 @@
-﻿using MediatR;
+﻿using Application.Dto;
+using MediatR;
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommand : IRequest<CreateEventCommand>
+    public class CreateEventCommand : IRequest<EventDto>
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -9,6 +10,6 @@ namespace Application.Event.Commands.CreateEvent
         public string Location { get; set; }
         public string Category { get; set; }
         public int MaxParticipants { get; set; }
-        public string ImagePath { get; set; }
+        public byte[]? Image { get; set; }
     }
 }

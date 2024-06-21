@@ -1,11 +1,14 @@
-﻿using Application.Interfaces;
+﻿using Application.Dto;
+using Application.Interfaces;
 using Domain.Interfaces;
+using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System;
 
 namespace Application.Event.Queries.GetAllEvents
 {
-    public class GetAllEventsQueryHandler : IRequestHandler<GetAllEventsQuery, IEnumerable<Core.Entities.Event>>
+    public class GetAllEventsQueryHandler : IRequestHandler<GetAllEventsQuery, IEnumerable<EventDto>>
     {
         IUnitOfWork _unitOfWork;
         public GetAllEventsQueryHandler(IUnitOfWork unitOfWork)
@@ -13,9 +16,10 @@ namespace Application.Event.Queries.GetAllEvents
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Core.Entities.Event>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<EventDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.EventRepository.GetAllEventsAsync(cancellationToken);
+            var res = await _unitOfWork.EventRepository.GetAllEventsAsync(cancellationToken);
+            return res.Adapt<IEnumerable<EventDto>>();
         }
     }
 }

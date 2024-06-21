@@ -14,17 +14,17 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Guid> CreateEventAsync(Event _event, CancellationToken cancellationToken)
+        public async Task<Event> CreateEventAsync(Event _event, CancellationToken cancellationToken)
         {
             await _context.Events.AddAsync(_event, cancellationToken);
-            return _event.Id;
+            return _event;
         }
 
-        public async Task<Guid> DeleteEventAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Event> DeleteEventAsync(Guid id, CancellationToken cancellationToken)
         {
             var eventForRemove = await _context.Events.FindAsync(id, cancellationToken);
             _context.Events.Remove(eventForRemove);
-            return eventForRemove.Id;
+            return eventForRemove;
         }
 
         public async Task<IEnumerable<Event>> GetAllEventsAsync(CancellationToken cancellationToken)
@@ -66,7 +66,7 @@ namespace Infrastructure.Repository
             return _event;
         }
 
-        public async Task<Guid> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken)
+        public async Task<Event> UpdateEventAsync(Guid id, Event _event, CancellationToken cancellationToken)
         {
             var existingEvent = await _context.Events.FindAsync(id, cancellationToken);
 
@@ -80,7 +80,7 @@ namespace Infrastructure.Repository
             existingEvent.Location = _event.Location;
             existingEvent.Category = _event.Category;
 
-            return existingEvent.Id;
+            return existingEvent;
         }
     }
 }

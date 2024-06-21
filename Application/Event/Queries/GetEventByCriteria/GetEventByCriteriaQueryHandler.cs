@@ -1,10 +1,12 @@
-﻿using Application.Interfaces;
+﻿using Application.Dto;
+using Application.Interfaces;
 using Domain.Interfaces;
+using Mapster;
 using MediatR;
 
 namespace Application.Event.Queries.GetEventByCriteria
 {
-    public class GetEventByCriteriaQueryHandler : IRequestHandler<GetEventByCriteriaQuery, IEnumerable<Core.Entities.Event>>
+    public class GetEventByCriteriaQueryHandler : IRequestHandler<GetEventByCriteriaQuery, IEnumerable<EventDto>>
     {
         IUnitOfWork _unitOfWork;
 
@@ -13,9 +15,10 @@ namespace Application.Event.Queries.GetEventByCriteria
                 _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Core.Entities.Event>> Handle(GetEventByCriteriaQuery query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<EventDto>> Handle(GetEventByCriteriaQuery query, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.EventRepository.GetEventByCriteriaAsync(query.Name, query.Date, query.Location, query.Category, cancellationToken);
+            var res = await _unitOfWork.EventRepository.GetEventByCriteriaAsync(query.Name, query.Date, query.Location, query.Category, cancellationToken);
+            return res.Adapt<IEnumerable<EventDto>>();
         }
     }
 }

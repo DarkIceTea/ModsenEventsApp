@@ -13,10 +13,10 @@ namespace Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<Guid> AddParicipantAsync(Participant paricipant, CancellationToken cancellationToken)
+        public async Task<Participant> AddParicipantAsync(Participant paricipant, CancellationToken cancellationToken)
         {
             await _dbContext.Participants.AddAsync(paricipant, cancellationToken);
-            return paricipant.Id;
+            return paricipant;
         }
 
         public async Task<Participant> GetParticipantByEmailAsync(string email, CancellationToken cancellationToken)

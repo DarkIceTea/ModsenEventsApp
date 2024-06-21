@@ -3,12 +3,7 @@ using Application.Auth.Login;
 using Application.Auth.RefreshTokens;
 using Application.Auth.RegisterParticipant;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.CodeDom.Compiler;
-using System.Security.Claims;
 
 namespace Web.Controllers
 {
@@ -24,8 +19,7 @@ namespace Web.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterParticipantCommand registerParticipantCommand, CancellationToken cancellationToken)
         {
-            await _sender.Send(registerParticipantCommand, cancellationToken);
-            return Created();
+            return Ok(await _sender.Send(registerParticipantCommand, cancellationToken));
         }
 
         [HttpPost("login")]
