@@ -5,7 +5,7 @@ using Infrastructure.EntityTypeConfigurations;
 
 namespace Infrastructure.Data
 {
-    public class EventAppDbContext : DbContext, IEventAppDbContext
+    public class EventAppDbContext : DbContext
     {
         
         public DbSet<Event> Events { get; set; }
