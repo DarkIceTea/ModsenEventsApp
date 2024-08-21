@@ -24,7 +24,7 @@ namespace Application.Participant.Commands.RegisterForEvent
             if (_event.Participants.Count >= _event.MaxParticipants)
                 throw new MaximumParticipantsException($"Maximum Participant already registered on Event {_event.Id}");
 
-            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(_authService.GetParticipantId(), cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(_authService.GetParticipantId(), cancellationToken);
             _event.Participants.Add(participant);
             _unitOfWork.EventRepository.UpdateAsync(_event.Id, _event, cancellationToken);
             _unitOfWork.Save();

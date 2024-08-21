@@ -24,7 +24,7 @@ namespace Application.Auth.RegisterParticipant
             paricipant.Id = Guid.NewGuid();
             paricipant.Role = "user";
 
-            var participant = await _unitOfWork.ParticipantRepository.AddParicipantAsync(paricipant, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.AddAsync(paricipant, cancellationToken);
             var tokens = _authService.GenerateTokens(participant);
             _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(participant.Id, tokens.RefreshToken, cancellationToken);
             _unitOfWork.Save();

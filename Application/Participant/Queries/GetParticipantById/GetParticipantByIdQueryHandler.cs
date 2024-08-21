@@ -16,7 +16,7 @@ namespace Application.Participant.Queries.GetParticipantById
 
         public async Task<ParticipantDto> Handle(GetParticipantByIdQuery query,CancellationToken cancellationToken)
         {
-            var res = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(query.Id, cancellationToken);
+            var res = await _unitOfWork.ParticipantRepository.GetByIdAsync(query.Id, cancellationToken);
             return res.Adapt<ParticipantDto>();
         }
     }
