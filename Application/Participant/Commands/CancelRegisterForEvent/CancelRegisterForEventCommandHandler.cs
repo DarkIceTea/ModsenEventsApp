@@ -18,10 +18,10 @@ namespace Application.Participant.Commands.CancelRegisterForEvent
         public async Task Handle(CancelRegisterForEventCommand request, CancellationToken cancellationToken)
         {
             var participantId = _authService.GetParticipantId();
-            var _event = await _unitOfWork.EventRepository.GetEventByIdAsync(request.EventId, cancellationToken);
+            var _event = await _unitOfWork.EventRepository.GetByIdAsync(request.EventId, cancellationToken);
             var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(participantId, cancellationToken);
             _event.Participants.Remove(participant);
-            _unitOfWork.EventRepository.UpdateEventAsync(_event.Id, _event, cancellationToken);
+            _unitOfWork.EventRepository.UpdateAsync(_event.Id, _event, cancellationToken);
             _unitOfWork.Save();
         }
     }

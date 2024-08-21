@@ -17,7 +17,7 @@ namespace Infrastructure.Repository
             return entity;
         }
 
-        public virtual async Task<T> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public virtual async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _dbContext.Set<T>().FindAsync(id, cancellationToken);
         }
