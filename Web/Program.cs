@@ -79,7 +79,7 @@ namespace Web
 
             app.UseHttpsRedirection();
           
-            //app.UseCustomExceptionHandler();
+            app.UseCustomExceptionHandler();
 
             app.UseAuthentication();
             app.UseAuthorization();
