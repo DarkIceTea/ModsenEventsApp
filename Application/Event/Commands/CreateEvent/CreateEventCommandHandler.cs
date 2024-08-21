@@ -20,7 +20,7 @@ namespace Application.Event.Commands.CreateEvent
 
             Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
 
-            var res = await _unitOfWork.EventRepository.CreateEventAsync(_event, cancellationToken);
+            var res = await _unitOfWork.EventRepository.AddAsync(_event, cancellationToken);
             _unitOfWork.Save();
             return res.Adapt<EventDto>();
         }

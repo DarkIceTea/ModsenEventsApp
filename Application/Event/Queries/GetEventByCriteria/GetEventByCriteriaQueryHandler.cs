@@ -17,7 +17,7 @@ namespace Application.Event.Queries.GetEventByCriteria
 
         public async Task<IEnumerable<EventDto>> Handle(GetEventByCriteriaQuery query, CancellationToken cancellationToken)
         {
-            var res = await _unitOfWork.EventRepository.GetEventByCriteriaAsync(query.Name, query.Date, query.Location, query.Category, cancellationToken);
+            var res = await _unitOfWork.EventRepository.GetByCriteriaAsync(query.Name, query.Date, query.Location, query.Category, cancellationToken);
             return res.Adapt<IEnumerable<EventDto>>();
         }
     }

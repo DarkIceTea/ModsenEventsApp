@@ -17,7 +17,7 @@ namespace Application.Event.Queries.GetEventbyId
 
         public async Task<EventDto> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
         {
-            var res = await _unitOfWork.EventRepository.GetEventByIdAsync(request.Id, cancellationToken);
+            var res = await _unitOfWork.EventRepository.GetByIdAsync(request.Id, cancellationToken);
             return res.Adapt<EventDto>();
         }
     }

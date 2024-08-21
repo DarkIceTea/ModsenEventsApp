@@ -5,28 +5,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
-    public class ParticipantRepository : IParticipantRepository
+    public class ParticipantRepository : BaseRepository<Participant>, IParticipantRepository
     {
         EventAppDbContext _dbContext;
-        public ParticipantRepository(EventAppDbContext dbContext)
+        public ParticipantRepository(EventAppDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<Participant> AddParicipantAsync(Participant paricipant, CancellationToken cancellationToken)
-        {
-            await _dbContext.Participants.AddAsync(paricipant, cancellationToken);
-            return paricipant;
+        public async Task<Participant> AddAsync(Participant paricipant, CancellationToken cancellationToken)
+        { 
+            return await base.AddAsync(paricipant, cancellationToken);
         }
 
-        public async Task<Participant> GetParticipantByEmailAsync(string email, CancellationToken cancellationToken)
+        public async Task<Participant> GetByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return await _dbContext.Participants.FirstOrDefaultAsync(p => p.Email == email, cancellationToken);
         }
 
-        public async Task<Participant> GetParticipantByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Participant> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _dbContext.Participants.FindAsync(id, cancellationToken);
+            return await base.GetByIdAsync(id, cancellationToken);
         }
 
         public async Task SetRefreshTokenAsync(Guid id, string refreshToken, CancellationToken cancellationToken)
