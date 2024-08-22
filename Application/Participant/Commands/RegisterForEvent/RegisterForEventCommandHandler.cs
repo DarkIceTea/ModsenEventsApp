@@ -22,7 +22,7 @@ namespace Application.Participant.Commands.RegisterForEvent
             var _event = await _unitOfWork.EventRepository.GetByIdAsync(request.EventId, cancellationToken);
 
             if (_event.Participants.Count >= _event.MaxParticipants)
-                throw new MaximumParticipantsException($"Maximum Participant already registered on Event {_event.Id}");
+                throw new BadHttpRequestException($"Maximum Participant already registered on Event {_event.Id}");
 
             var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(_authService.GetParticipantId(), cancellationToken);
             _event.Participants.Add(participant);
