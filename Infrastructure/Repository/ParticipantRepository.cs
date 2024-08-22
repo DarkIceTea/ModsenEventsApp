@@ -30,8 +30,18 @@ namespace Infrastructure.Repository
 
         public async Task SetRefreshTokenAsync(Guid id, string refreshToken, CancellationToken cancellationToken)
         {
-            var participant = await _dbContext.Participants.FindAsync(id, cancellationToken);
+            var participant = await _dbContext.Participants.FindAsync(id, cancellationToken);           //TODO: Delete this
             participant.RefreshToken = refreshToken;
+        }
+
+        public async Task<Participant> DeleteAsync(Participant participant, CancellationToken cancellationToken)
+        {
+            return await base.DeleteAsync(participant.Id, cancellationToken);         //TODO: Change get participnat (not id)
+        }
+
+        public async Task<Participant> UpdateAsync(Participant paricipant, CancellationToken cancellationToken)
+        {
+            return await base.UpdateAsync(paricipant, cancellationToken);
         }
     }
 }

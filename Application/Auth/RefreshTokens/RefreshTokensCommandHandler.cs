@@ -22,7 +22,9 @@ namespace Application.Auth.RefreshTokens
                 throw new UnauthorizedAccessException("Refresh tokens don't match");
 
             var tokens = _authService.GenerateTokens(participant);
-            _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(id, tokens.RefreshToken, cancellationToken);
+            //_unitOfWork.ParticipantRepository.SetRefreshTokenAsync(id, tokens.RefreshToken, cancellationToken);
+            participant.RefreshToken = tokens.RefreshToken;
+            _unitOfWork.ParticipantRepository.UpdateAsync(participant, cancellationToken);
             _unitOfWork.Save();
             return tokens;
         }
