@@ -25,7 +25,7 @@ namespace Application.Participant.Commands.RegisterForEvent
 
             var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(request.ParticipantId, cancellationToken);
             _event.Participants.Add(participant);
-            _unitOfWork.EventRepository.UpdateAsync(_event.Id, _event, cancellationToken);
+            _unitOfWork.EventRepository.UpdateAsync(_event, cancellationToken);
             _unitOfWork.Save();
         }
 

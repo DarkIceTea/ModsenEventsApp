@@ -17,7 +17,8 @@ namespace Application.Event.Commands.DeleteEvent
 
         public async Task<EventDto> Handle(DeleteEventCommand command, CancellationToken cancellationToken)
         {
-            var res = await _unitOfWork.EventRepository.DeleteAsync(command.Id, cancellationToken);
+            var eventForDelete = await _unitOfWork.EventRepository.GetByIdAsync(command.Id, cancellationToken);
+            var res = await _unitOfWork.EventRepository.DeleteAsync(eventForDelete, cancellationToken);
             _unitOfWork.Save();
             return res.Adapt<EventDto>();
         }

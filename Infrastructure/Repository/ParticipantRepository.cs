@@ -36,7 +36,7 @@ namespace Infrastructure.Repository
 
         public async Task<Participant> DeleteAsync(Participant participant, CancellationToken cancellationToken)
         {
-            return await base.DeleteAsync(participant.Id, cancellationToken);         //TODO: Change get participnat (not id)
+            return await base.DeleteAsync(participant, cancellationToken);         //TODO: Change get participnat (not id)
         }
 
         public async Task<Participant> UpdateAsync(Participant paricipant, CancellationToken cancellationToken)
