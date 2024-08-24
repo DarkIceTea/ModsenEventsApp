@@ -56,7 +56,7 @@ namespace Infrastructure.Repository
 
         async Task<Event> IEventRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await base.GetByIdAsync(id, cancellationToken);
+            return await eventAppDbContext.Events.Include(e => e.Participants).FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
 
         async Task<Event> IEventRepository.UpdateAsync(Guid id, Event _event, CancellationToken cancellationToken)

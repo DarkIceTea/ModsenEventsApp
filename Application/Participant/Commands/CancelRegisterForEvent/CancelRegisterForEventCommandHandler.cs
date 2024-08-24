@@ -17,9 +17,8 @@ namespace Application.Participant.Commands.CancelRegisterForEvent
 
         public async Task Handle(CancelRegisterForEventCommand request, CancellationToken cancellationToken)
         {
-            var participantId = _authService.GetParticipantId();
             var _event = await _unitOfWork.EventRepository.GetByIdAsync(request.EventId, cancellationToken);
-            var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(participantId, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(request.ParticipantId, cancellationToken);
             _event.Participants.Remove(participant);
             _unitOfWork.EventRepository.UpdateAsync(_event.Id, _event, cancellationToken);
             _unitOfWork.Save();

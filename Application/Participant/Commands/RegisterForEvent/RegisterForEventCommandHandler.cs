@@ -18,13 +18,12 @@ namespace Application.Participant.Commands.RegisterForEvent
 
         public async Task Handle(RegisterForEventCommand request, CancellationToken cancellationToken)
         {
-            var participantId = _authService.GetParticipantId();
             var _event = await _unitOfWork.EventRepository.GetByIdAsync(request.EventId, cancellationToken);
 
             if (_event.Participants.Count >= _event.MaxParticipants)
                 throw new BadHttpRequestException($"Maximum Participant already registered on Event {_event.Id}");
 
-            var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(_authService.GetParticipantId(), cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(request.ParticipantId, cancellationToken);
             _event.Participants.Add(participant);
             _unitOfWork.EventRepository.UpdateAsync(_event.Id, _event, cancellationToken);
             _unitOfWork.Save();

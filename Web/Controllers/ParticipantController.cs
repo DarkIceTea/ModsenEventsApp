@@ -26,17 +26,17 @@ namespace Web.Controllers
             return Ok(participant);
         }
 
-        [HttpPost("register-for-event/{id:guid}")]
-        public async Task<ActionResult> RegisterForEvent([FromRoute] Guid id, CancellationToken cancellationToken)
+        [HttpPost("register-for-event/{eventGuid:guid}/{participantGuid:guid}")]
+        public async Task<ActionResult> RegisterForEvent([FromRoute] Guid eventGuid, [FromRoute] Guid participantGuid, CancellationToken cancellationToken)
         {
-            await _sender.Send(new RegisterForEventCommand() { EventId = id }, cancellationToken);
+            await _sender.Send(new RegisterForEventCommand() { EventId = eventGuid, ParticipantId = participantGuid}, cancellationToken);
             return Ok();
         }
 
-        [HttpPost("cancel-register-for-event/{id:guid}")]
-        public async Task<ActionResult> CancelRegisterForEvent(Guid id, CancellationToken cancellationToken)
+        [HttpPost("cancel-register-for-event/{eventGuid:guid}/{participantGuid:guid}")]
+        public async Task<ActionResult> CancelRegisterForEvent([FromRoute] Guid eventGuid, [FromRoute] Guid participantGuid, CancellationToken cancellationToken)
         {
-            await _sender.Send(new CancelRegisterForEventCommand() { EventId = id }, cancellationToken);
+            await _sender.Send(new CancelRegisterForEventCommand() { EventId = eventGuid, ParticipantId = participantGuid }, cancellationToken);
             return Ok();
         }
     }
