@@ -74,9 +74,9 @@ namespace Infrastructure.Repository
             return ev;
         }
 
-        async Task<Event> IEventRepository.UpdateAsync(Event _event, CancellationToken cancellationToken)
+        async Task<Event> IEventRepository.UpdateAsync(Event existingEvent, Event _event, CancellationToken cancellationToken)
         {
-            var ev = await base.UpdateAsync(_event, cancellationToken);
+            var ev = await base.UpdateAsync(existingEvent, _event, cancellationToken);
             await eventAppDbContext.Entry(ev)
                     .Collection(e => e.Participants)
                     .LoadAsync(cancellationToken);

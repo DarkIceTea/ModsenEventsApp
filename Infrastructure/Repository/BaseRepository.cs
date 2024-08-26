@@ -26,14 +26,9 @@ namespace Infrastructure.Repository
             return entity;
         }
 
-        public virtual async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken) //TODO: ID через URL должен быть
+        public virtual async Task<T> UpdateAsync(T existingEntity,T entity, CancellationToken cancellationToken) //TODO: ID через URL должен быть
         {
-            var trackedEntity = _dbContext.Set<T>().Local.FirstOrDefault(e => e == entity);
-            if (trackedEntity == null)
-            {
-                _dbContext.Set<T>().Attach(entity);
-            }
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
             return entity;
         }
 

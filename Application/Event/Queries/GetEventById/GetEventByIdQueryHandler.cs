@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Event.Queries.GetEventbyId
 {
-    public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, EventDto>
+    public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, EventResponseDto>
     {
         IUnitOfWork _unitOfWork;
         public GetEventByIdQueryHandler(IUnitOfWork unitOfWork)
@@ -15,10 +15,10 @@ namespace Application.Event.Queries.GetEventbyId
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<EventDto> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
+        public async Task<EventResponseDto> Handle(GetEventByIdQuery request, CancellationToken cancellationToken)
         {
             var res = await _unitOfWork.EventRepository.GetByIdAsync(request.Id, cancellationToken);
-            return res.Adapt<EventDto>();
+            return res.Adapt<EventResponseDto>();
         }
     }
 }

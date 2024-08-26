@@ -17,7 +17,7 @@ namespace Web.Extensions
                 .NewConfig()
                 .Map(dest => dest, src => src.Id);
 
-            TypeAdapterConfig<Event, EventDto>.NewConfig()
+            TypeAdapterConfig<Event, EventResponseDto>.NewConfig()
             .Map(dest => dest.Participants, src => src.Participants.Select(p => p.Id).ToList());
 
             TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());

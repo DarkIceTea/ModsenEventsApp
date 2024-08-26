@@ -7,6 +7,7 @@ using Application.Event.Queries.GetEventById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Application.Dto;
 
 
 namespace Web.Controllers
@@ -51,16 +52,15 @@ namespace Web.Controllers
 
         [HttpPost("create")]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult> CreateEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
+        public async Task<ActionResult> CreateEvent([FromBody] EventRequestDto eventRequestDto, CancellationToken cancellationToken)
         {
-            return Ok(await _sender.Send(command, cancellationToken));
+            return Ok(await _sender.Send(new CreateEventCommand() {EventRequest = eventRequestDto}, cancellationToken));
         }
 
         [HttpPut("update/{id:guid}")]
-        public async Task<ActionResult> UpdateEvent([FromRoute] Guid id, [FromBody] UpdateEventCommand updateEventCommand, CancellationToken cancellationToken)
+        public async Task<ActionResult> UpdateEvent([FromRoute] Guid id, [FromBody] EventRequestDto eventRequestDto, CancellationToken cancellationToken)
         {
-            updateEventCommand.Id = id;
-            return Ok(await _sender.Send(updateEventCommand, cancellationToken));
+            return Ok(await _sender.Send(new UpdateEventCommand() {Id = id, EventRequestDto = eventRequestDto}, cancellationToken));
         }
 
         [HttpDelete("delete/{id:guid}")]

@@ -20,7 +20,6 @@ namespace Application.Participant.Commands.CancelRegisterForEvent
             var _event = await _unitOfWork.EventRepository.GetByIdAsync(request.EventId, cancellationToken);
             var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(request.ParticipantId, cancellationToken);
             _event.Participants.Remove(participant);
-            _unitOfWork.EventRepository.UpdateAsync(_event, cancellationToken);
             _unitOfWork.Save();
         }
     }

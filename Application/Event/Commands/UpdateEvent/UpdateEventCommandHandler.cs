@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Event.Commands.UpdateEvent
 {
-    public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand, EventDto>
+    public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand, EventResponseDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -14,13 +14,14 @@ namespace Application.Event.Commands.UpdateEvent
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<EventDto> Handle(UpdateEventCommand command, CancellationToken cancellationToken)
+        public async Task<EventResponseDto> Handle(UpdateEventCommand command, CancellationToken cancellationToken)
         {
-            Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
-            await _unitOfWork.EventRepository.GetByIdAsync(_event.Id, cancellationToken);
-            var res = await _unitOfWork.EventRepository.UpdateAsync(_event, cancellationToken);
+            Core.Entities.Event _event = command.EventRequestDto.Adapt<Core.Entities.Event>();
+            _event.Id = command.Id;
+            var existingEvent = await _unitOfWork.EventRepository.GetByIdAsync(_event.Id, cancellationToken);
+            var res = await _unitOfWork.EventRepository.UpdateAsync(existingEvent, _event, cancellationToken);
             _unitOfWork.Save();
-            return res.Adapt<EventDto>();
+            return res.Adapt<EventResponseDto>();
         }
     }
 }
