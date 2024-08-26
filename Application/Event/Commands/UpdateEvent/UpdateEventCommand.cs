@@ -5,7 +5,7 @@ namespace Application.Event.Commands.UpdateEvent
 {
     public class UpdateEventCommand : IRequest <EventDto>
     {
-        public Guid UpdatableId { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
         public string Description { get; set; }

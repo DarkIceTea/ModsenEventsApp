@@ -59,7 +59,7 @@ namespace Web.Controllers
         [HttpPut("update/{id:guid}")]
         public async Task<ActionResult> UpdateEvent([FromRoute] Guid id, [FromBody] UpdateEventCommand updateEventCommand, CancellationToken cancellationToken)
         {
-            updateEventCommand.UpdatableId = id;
+            updateEventCommand.Id = id;
             return Ok(await _sender.Send(updateEventCommand, cancellationToken));
         }
 
