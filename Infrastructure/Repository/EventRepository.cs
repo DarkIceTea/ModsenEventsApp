@@ -15,12 +15,20 @@ namespace Infrastructure.Repository
 
         async Task<Event> IEventRepository.AddAsync(Event _event, CancellationToken cancellationToken)
         {
-            return await base.AddAsync(_event, cancellationToken);
+            var ev = await base.AddAsync(_event, cancellationToken);
+            await eventAppDbContext.Entry(ev)
+                    .Collection(e => e.Participants)
+                    .LoadAsync(cancellationToken);
+            return ev;
         }
 
         async Task<Event> IEventRepository.DeleteAsync(Event _event, CancellationToken cancellationToken)
         {
-            return await base.DeleteAsync(_event, cancellationToken);
+            var ev = await base.DeleteAsync(_event, cancellationToken);
+            await eventAppDbContext.Entry(ev)
+                    .Collection(e => e.Participants)
+                    .LoadAsync(cancellationToken);
+            return ev;
         }
 
         async Task<IEnumerable<Event>> IEventRepository.GetAllAsync(CancellationToken cancellationToken)
@@ -54,14 +62,25 @@ namespace Infrastructure.Repository
             return await query.ToListAsync(cancellationToken);
         }
 
-        async Task<Event> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        async Task<Event> IEventRepository.GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await eventAppDbContext.Events.Include(e => e.Participants).FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+            var ev = await base.GetByIdAsync(id, cancellationToken);
+            if (ev != null)
+            {
+                await eventAppDbContext.Entry(ev)
+                    .Collection(e => e.Participants)
+                    .LoadAsync(cancellationToken);
+            }
+            return ev;
         }
 
-        async Task<Event> UpdateAsync(Event _event, CancellationToken cancellationToken)
+        async Task<Event> IEventRepository.UpdateAsync(Event _event, CancellationToken cancellationToken)
         {
-            return await base.UpdateAsync(_event, cancellationToken);
+            var ev = await base.UpdateAsync(_event, cancellationToken);
+            await eventAppDbContext.Entry(ev)
+                    .Collection(e => e.Participants)
+                    .LoadAsync(cancellationToken);
+            return ev;
         }   
     }
 }

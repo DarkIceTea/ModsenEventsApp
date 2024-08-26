@@ -19,7 +19,7 @@ namespace Infrastructure.Repository
 
         public virtual async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _dbContext.Set<T>().FindAsync(id, cancellationToken);
+            return await _dbContext.Set<T>().FindAsync(id, cancellationToken);              //TODO: throw Exception
         }
 
         public virtual async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken) //TODO: ID через URL должен быть
