@@ -13,20 +13,17 @@ namespace Infrastructure.Data
         public EventAppDbContext(DbContextOptions<EventAppDbContext> options)
             : base(options) 
         {
-            if (!Database.CanConnect())
-            {
-                Database.EnsureCreated();
-                new EventAppDbSeed(this);
-            }
+           
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new EventConfiguration());
             builder.ApplyConfiguration(new ParticipantConfiguration());
+            
+            SeedData.Seed(builder);
 
             base.OnModelCreating(builder);
-            
         }
     }
 }
