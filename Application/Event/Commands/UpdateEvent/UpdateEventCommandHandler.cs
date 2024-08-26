@@ -17,6 +17,7 @@ namespace Application.Event.Commands.UpdateEvent
         public async Task<EventDto> Handle(UpdateEventCommand command, CancellationToken cancellationToken)
         {
             Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
+            await _unitOfWork.EventRepository.GetByIdAsync(_event.Id, cancellationToken);
             var res = await _unitOfWork.EventRepository.UpdateAsync(_event, cancellationToken);
             _unitOfWork.Save();
             return res.Adapt<EventDto>();

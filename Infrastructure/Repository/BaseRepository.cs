@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
@@ -19,7 +20,10 @@ namespace Infrastructure.Repository
 
         public virtual async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _dbContext.Set<T>().FindAsync(id, cancellationToken);              //TODO: throw Exception
+            var entity = await _dbContext.Set<T>().FindAsync(id, cancellationToken);
+            if (entity is null)
+                throw new NotFoundException($"{typeof(T).Name} {id} not found");
+            return entity;
         }
 
         public virtual async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken) //TODO: ID через URL должен быть
