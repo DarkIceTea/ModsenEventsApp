@@ -17,12 +17,12 @@ namespace Application.Auth.RefreshTokens
         public async Task<Tokens> Handle(RefreshTokensCommand request, CancellationToken cancellationToken)
         {
             Guid id = _authService.GetParticipantId();
-            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByIdAsync(id, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetByIdAsync(id, cancellationToken);
             if (!participant.RefreshToken.Equals(request.RefreshToken))
                 throw new UnauthorizedAccessException("Refresh tokens don't match");
 
             var tokens = _authService.GenerateTokens(participant);
-            _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(id, tokens.RefreshToken, cancellationToken);
+            participant.RefreshToken = tokens.RefreshToken;
             _unitOfWork.Save();
             return tokens;
         }

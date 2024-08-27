@@ -8,7 +8,7 @@ using System;
 
 namespace Application.Event.Queries.GetAllEvents
 {
-    public class GetAllEventsQueryHandler : IRequestHandler<GetAllEventsQuery, IEnumerable<EventDto>>
+    public class GetAllEventsQueryHandler : IRequestHandler<GetAllEventsQuery, IEnumerable<EventResponseDto>>
     {
         IUnitOfWork _unitOfWork;
         public GetAllEventsQueryHandler(IUnitOfWork unitOfWork)
@@ -16,10 +16,10 @@ namespace Application.Event.Queries.GetAllEvents
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<EventDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<EventResponseDto>> Handle(GetAllEventsQuery request, CancellationToken cancellationToken)
         {
-            var res = await _unitOfWork.EventRepository.GetAllEventsAsync(cancellationToken);
-            return res.Adapt<IEnumerable<EventDto>>();
+            var res = await _unitOfWork.EventRepository.GetAllAsync(cancellationToken);
+            return res.Adapt<IEnumerable<EventResponseDto>>();
         }
     }
 }

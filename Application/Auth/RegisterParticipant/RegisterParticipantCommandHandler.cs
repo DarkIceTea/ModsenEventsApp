@@ -19,12 +19,12 @@ namespace Application.Auth.RegisterParticipant
 
         public async Task<Tokens> Handle(RegisterParticipantCommand command, CancellationToken cancellationToken)
         {
-            var paricipant = command.Adapt<Core.Entities.Participant>();
+            var paricipant = command.ParticipantRequestDto.Adapt<Core.Entities.Participant>();
             paricipant.RegistrationDate = DateTime.Now;
             paricipant.Id = Guid.NewGuid();
             paricipant.Role = "user";
 
-            var participant = await _unitOfWork.ParticipantRepository.AddParicipantAsync(paricipant, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.AddAsync(paricipant, cancellationToken);
             var tokens = _authService.GenerateTokens(participant);
             _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(participant.Id, tokens.RefreshToken, cancellationToken);
             _unitOfWork.Save();

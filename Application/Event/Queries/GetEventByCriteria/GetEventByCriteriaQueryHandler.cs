@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Event.Queries.GetEventByCriteria
 {
-    public class GetEventByCriteriaQueryHandler : IRequestHandler<GetEventByCriteriaQuery, IEnumerable<EventDto>>
+    public class GetEventByCriteriaQueryHandler : IRequestHandler<GetEventByCriteriaQuery, IEnumerable<EventResponseDto>>
     {
         IUnitOfWork _unitOfWork;
 
@@ -15,10 +15,10 @@ namespace Application.Event.Queries.GetEventByCriteria
                 _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<EventDto>> Handle(GetEventByCriteriaQuery query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<EventResponseDto>> Handle(GetEventByCriteriaQuery query, CancellationToken cancellationToken)
         {
-            var res = await _unitOfWork.EventRepository.GetEventByCriteriaAsync(query.Name, query.Date, query.Location, query.Category, cancellationToken);
-            return res.Adapt<IEnumerable<EventDto>>();
+            var res = await _unitOfWork.EventRepository.GetByCriteriaAsync(query.Name, query.Date, query.Location, query.Category, cancellationToken);
+            return res.Adapt<IEnumerable<EventResponseDto>>();
         }
     }
 }

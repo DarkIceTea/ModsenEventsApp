@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Event.Queries.GetAllEvents
 {
-    public class GetAllEventsQuery : IRequest<IEnumerable<EventDto>>
+    public class GetAllEventsQuery : IRequest<IEnumerable<EventResponseDto>>
     {
     }
 }

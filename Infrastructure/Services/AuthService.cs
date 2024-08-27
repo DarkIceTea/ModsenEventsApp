@@ -59,7 +59,7 @@ namespace Infrastructure.Services
             }
         }
 
-        public Guid GetParticipantId()
+        public Guid GetParticipantId()                          
         {
             string? ParticipantId = _httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

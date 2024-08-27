@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Event.Queries.GetEventById
 {
-    public class GetEventByIdQuery : IRequest<EventDto>
+    public class GetEventByIdQuery : IRequest<EventResponseDto>
     {
         public Guid Id { get; set; }
     }

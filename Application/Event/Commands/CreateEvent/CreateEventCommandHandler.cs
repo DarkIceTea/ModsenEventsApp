@@ -6,7 +6,7 @@ using Application.Dto;
 
 namespace Application.Event.Commands.CreateEvent
 {
-    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, EventDto>
+    public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, EventResponseDto>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -15,14 +15,13 @@ namespace Application.Event.Commands.CreateEvent
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<EventDto> Handle(CreateEventCommand command, CancellationToken cancellationToken)
+        public async Task<EventResponseDto> Handle(CreateEventCommand command, CancellationToken cancellationToken)
         {
+            Core.Entities.Event _event = command.EventRequest.Adapt<Core.Entities.Event>();
 
-            Core.Entities.Event _event = command.Adapt<Core.Entities.Event>();
-
-            var res = await _unitOfWork.EventRepository.CreateEventAsync(_event, cancellationToken);
+            var res = await _unitOfWork.EventRepository.AddAsync(_event, cancellationToken);
             _unitOfWork.Save();
-            return res.Adapt<EventDto>();
+            return res.Adapt<EventResponseDto>();
         }
     }
 }

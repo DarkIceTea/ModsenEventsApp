@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Event.Queries.GetEventByCriteria
 {
-    public class GetEventByCriteriaQuery : IRequest<IEnumerable<EventDto>>
+    public class GetEventByCriteriaQuery : IRequest<IEnumerable<EventResponseDto>>
     {
         public string Name { get; set; }
         public DateTime? Date { get; set; }

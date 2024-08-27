@@ -4,4 +4,4 @@
     {
         public MaximumParticipantsException(string message) : base(message) { }
     }
-}
+}       //TODO: Delete this

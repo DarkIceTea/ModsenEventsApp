@@ -16,10 +16,10 @@ namespace Application.Auth.Login
         }
         public async Task<Tokens> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
-            var participant = await _unitOfWork.ParticipantRepository.GetParticipantByEmailAsync(command.Email, cancellationToken);
+            var participant = await _unitOfWork.ParticipantRepository.GetByEmailAsync(command.Email, cancellationToken);
 
             if (participant?.FirstName != command.Name)
-                throw new NotFoundException();
+                throw new NotFoundException("Participant not found");
 
             var tokens = _authService.GenerateTokens(participant);
             _unitOfWork.ParticipantRepository.SetRefreshTokenAsync(participant.Id, tokens.RefreshToken, cancellationToken);

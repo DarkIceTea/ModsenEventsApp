@@ -29,11 +29,17 @@ namespace Web.Middleware
             var result = string.Empty;
             switch (exception)
             {
-                case AlreadyExistException ex:
+                case AlreadyExistException:
                     code = HttpStatusCode.BadRequest;
                     break;
                 case NotFoundException:
                     code = HttpStatusCode.NotFound;
+                    break;
+                case BadHttpRequestException:
+                    code = HttpStatusCode.BadRequest;
+                    break;
+                default:
+                    code = HttpStatusCode.BadRequest;
                     break;
             }
             context.Response.ContentType = "application/json";
