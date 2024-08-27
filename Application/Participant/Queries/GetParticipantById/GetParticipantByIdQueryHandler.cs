@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Participant.Queries.GetParticipantById
 {
-    public class GetParticipantByIdQueryHandler : IRequestHandler<GetParticipantByIdQuery, ParticipantDto>
+    public class GetParticipantByIdQueryHandler : IRequestHandler<GetParticipantByIdQuery, ParticipantResponseDto>
     {
         private readonly IUnitOfWork _unitOfWork;
         public GetParticipantByIdQueryHandler(IUnitOfWork unitOfWork)
@@ -14,10 +14,10 @@ namespace Application.Participant.Queries.GetParticipantById
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ParticipantDto> Handle(GetParticipantByIdQuery query,CancellationToken cancellationToken)
+        public async Task<ParticipantResponseDto> Handle(GetParticipantByIdQuery query,CancellationToken cancellationToken)
         {
             var res = await _unitOfWork.ParticipantRepository.GetByIdAsync(query.Id, cancellationToken);
-            return res.Adapt<ParticipantDto>();
+            return res.Adapt<ParticipantResponseDto>();
         }
     }
 

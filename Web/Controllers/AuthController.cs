@@ -2,12 +2,16 @@
 using Application.Auth.Login;
 using Application.Auth.RefreshTokens;
 using Application.Auth.RegisterParticipant;
+using Application.Dto;
+using Infrastructure.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
 {
     [Route("auth")]
+    [ValidateModel]
+    [ApiController]
     public class AuthController : Controller
     {
         ISender _sender;
@@ -17,9 +21,9 @@ namespace Web.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody]RegisterParticipantCommand registerParticipantCommand, CancellationToken cancellationToken)
+        public async Task<IActionResult> Register([FromBody]ParticipantRequestDto participantRequestDto, CancellationToken cancellationToken)
         {
-            return Ok(await _sender.Send(registerParticipantCommand, cancellationToken));
+            return Ok(await _sender.Send(new RegisterParticipantCommand() { ParticipantRequestDto = participantRequestDto}, cancellationToken));
         }
 
         [HttpPost("login")]

@@ -8,6 +8,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Application.Dto;
+using System.ComponentModel.DataAnnotations;
+using Infrastructure.Filters;
 
 
 namespace Web.Controllers
@@ -15,6 +17,7 @@ namespace Web.Controllers
     [ApiController]
     [Route("api/events")]
     [Authorize(Policy = "AuthUsers")]
+    [ValidateModel]
     public class EventsController : Controller
     {
         private readonly ISender _sender;

@@ -1,6 +1,7 @@
 ﻿using Application.Participant.Commands.CancelRegisterForEvent;
 using Application.Participant.Commands.RegisterForEvent;
 using Application.Participant.Queries.GetParticipantById;
+using Infrastructure.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,14 +27,14 @@ namespace Web.Controllers
             return Ok(participant);
         }
 
-        [HttpPost("register-for-event/{eventGuid:guid}/{participantGuid:guid}")]
-        public async Task<ActionResult> RegisterForEvent([FromRoute] Guid eventGuid, [FromRoute] Guid participantGuid, CancellationToken cancellationToken)
+        [HttpPost("register-for-event/")]
+        public async Task<ActionResult> RegisterForEvent(Guid eventGuid, Guid participantGuid, CancellationToken cancellationToken)
         {
             await _sender.Send(new RegisterForEventCommand() { EventId = eventGuid, ParticipantId = participantGuid}, cancellationToken);
             return Ok();
         }
 
-        [HttpPost("cancel-register-for-event/{eventGuid:guid}/{participantGuid:guid}")]
+        [HttpPost("cancel-register-for-event/")]
         public async Task<ActionResult> CancelRegisterForEvent([FromRoute] Guid eventGuid, [FromRoute] Guid participantGuid, CancellationToken cancellationToken)
         {
             await _sender.Send(new CancelRegisterForEventCommand() { EventId = eventGuid, ParticipantId = participantGuid }, cancellationToken);
